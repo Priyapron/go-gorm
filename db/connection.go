@@ -2,16 +2,19 @@ package db
 
 import (
 	"fmt"
-	"gorm.io/gorm"
+
 	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func ConnectDatabase(dbType, dbUser, dbPassword, dbHost, dbPort, dbName string) (*gorm.DB, error) {
-	
+
 	var dialector gorm.Dialector
+
+	//ตรวจสอบว่าเป็นฐานข้อมูลชนิดใด
 	switch dbType {
 	case "mysql":
-// dsn := "admin:adminpassword@tcp(localhost:3306)/go_gorm?charset=utf8mb4&parseTime=True&loc=Local"
+		// dsn := "admin:adminpassword@tcp(localhost:3306)/go_gorm?charset=utf8mb4&parseTime=True&loc=Local"
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
 		fmt.Println("dsn:", dsn)
 		dialector = mysql.Open(dsn)
@@ -20,7 +23,7 @@ func ConnectDatabase(dbType, dbUser, dbPassword, dbHost, dbPort, dbName string) 
 	default:
 		return nil, fmt.Errorf("unknown db type %s", dbType)
 	}
-	
+
 	db, err := gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
 		return nil, err
